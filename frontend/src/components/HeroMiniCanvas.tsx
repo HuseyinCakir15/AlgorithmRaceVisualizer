@@ -9,15 +9,20 @@ interface Step {
   pivot?: number;
 }
 
-function isLowMotionEnvironment() {
-  return window.innerWidth <= 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function isMobileViewport() {
+  return window.innerWidth <= 768;
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 export function HeroMiniCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(() => !isLowMotionEnvironment());
-  const [isMobileDevice, setIsMobileDevice] = useState(isLowMotionEnvironment);
+  const [isPlaying, setIsPlaying] = useState(() => !prefersReducedMotion());
+  const [isMobileDevice, setIsMobileDevice] = useState(isMobileViewport);
+  const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
   const [isVisible, setIsVisible] = useState(true);
   const [lane1Algo] = useState('Quick Sort');
   const [lane2Algo] = useState('Bubble Sort');
@@ -42,13 +47,15 @@ export function HeroMiniCanvas() {
     timer: null,
   });
 
-  // Mobile / Reduced Motion detection
+  // Keep the simulator live on mobile while honoring accessibility preferences.
   useEffect(() => {
     const checkMobile = () => {
-      const isMobile = isLowMotionEnvironment();
+      const isMobile = isMobileViewport();
+      const shouldReduceMotion = prefersReducedMotion();
       setIsMobileDevice(isMobile);
-      if (isMobile) {
-        setIsPlaying(false); // Disable auto-play loop on mobile devices to save main thread budget
+      setReducedMotion(shouldReduceMotion);
+      if (shouldReduceMotion) {
+        setIsPlaying(false);
       }
     };
     checkMobile();
@@ -283,9 +290,9 @@ export function HeroMiniCanvas() {
     resetRace();
   }, [resetRace]);
 
-  // Main animation timer effect - paused on mobile or when offscreen/hidden
+  // Main animation timer effect - slower on mobile, paused when hidden or reduced motion is requested.
   useEffect(() => {
-    if (!isPlaying || !isVisible || isMobileDevice) {
+    if (!isPlaying || !isVisible || reducedMotion) {
       if (stateRef.current.timer) clearInterval(stateRef.current.timer);
       return;
     }
@@ -325,12 +332,12 @@ export function HeroMiniCanvas() {
           resetRace();
         }, 3000);
       }
-    }, 70);
+    }, isMobileDevice ? 100 : 70);
 
     return () => {
       if (stateRef.current.timer) clearInterval(stateRef.current.timer);
     };
-  }, [isPlaying, isVisible, isMobileDevice, renderCanvas, resetRace]);
+  }, [isPlaying, isVisible, isMobileDevice, reducedMotion, renderCanvas, resetRace]);
 
   const drawLane = (
     ctx: CanvasRenderingContext2D,
