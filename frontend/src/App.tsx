@@ -26,9 +26,9 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
     try {
       const saved = localStorage.getItem('algorace_dark_mode');
-      return saved !== null ? JSON.parse(saved) : true;
+      return saved !== null ? JSON.parse(saved) : false;
     } catch {
-      return true;
+      return false;
     }
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

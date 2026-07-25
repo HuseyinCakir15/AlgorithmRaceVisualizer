@@ -9,11 +9,15 @@ interface Step {
   pivot?: number;
 }
 
+function isLowMotionEnvironment() {
+  return window.innerWidth <= 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export function HeroMiniCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(() => !isLowMotionEnvironment());
+  const [isMobileDevice, setIsMobileDevice] = useState(isLowMotionEnvironment);
   const [isVisible, setIsVisible] = useState(true);
   const [lane1Algo] = useState('Quick Sort');
   const [lane2Algo] = useState('Bubble Sort');
@@ -41,7 +45,7 @@ export function HeroMiniCanvas() {
   // Mobile / Reduced Motion detection
   useEffect(() => {
     const checkMobile = () => {
-      const isMobile = window.innerWidth <= 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = isLowMotionEnvironment();
       setIsMobileDevice(isMobile);
       if (isMobile) {
         setIsPlaying(false); // Disable auto-play loop on mobile devices to save main thread budget
@@ -321,7 +325,7 @@ export function HeroMiniCanvas() {
           resetRace();
         }, 3000);
       }
-    }, 45);
+    }, 70);
 
     return () => {
       if (stateRef.current.timer) clearInterval(stateRef.current.timer);
