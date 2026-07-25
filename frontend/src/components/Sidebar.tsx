@@ -60,7 +60,7 @@ export function Sidebar({
               </div>
             </div>
             {mobileOpen && onMobileClose && (
-              <button type="button" className="mobile-close-btn" onClick={onMobileClose}>
+              <button type="button" className="mobile-close-btn" onClick={onMobileClose} aria-label="Close sidebar">
                 <X size={20} />
               </button>
             )}

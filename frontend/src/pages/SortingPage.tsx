@@ -321,7 +321,7 @@ export function SortingPage({ catalog }: { catalog: CatalogResponse }) {
         <div className="validation-alert-banner">
           <span className="alert-icon">⚠️</span>
           <span>{validationError}</span>
-          <button type="button" className="close-banner-btn" onClick={() => setValidationError(null)}>
+          <button type="button" className="close-banner-btn" onClick={() => setValidationError(null)} aria-label="Dismiss error message">
             ✕
           </button>
         </div>
