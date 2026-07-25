@@ -102,7 +102,7 @@ export default function App() {
   return (
     <AudioCtx.Provider value={{ play, audioSettings, setAudioSettings }}>
       {active === 'landing' ? (
-        <LandingPage onNavigate={setActive} />
+        <LandingPage onNavigate={setActive} darkMode={darkMode} setDarkMode={setDarkMode} />
       ) : (
         <div className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
           {/* Mobile Header Bar */}
