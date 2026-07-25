@@ -59,6 +59,8 @@ export function LandingPage({ onNavigate }: Props) {
           type="button"
           className="landing-mobile-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-expanded={mobileMenuOpen}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
         >
           {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
