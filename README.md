@@ -15,14 +15,14 @@ AlgoRace is a high-performance full-stack web application designed for real-time
 
 ## 📸 Visual Overview & Live Demo
 
-### Live Race Animation Demo
-![AlgoRace Live Race Simulation](C:/Users/HP/.gemini/antigravity-ide/brain/215e8701-d1d0-4c50-ae84-bf01aa1d873e/algorace_demo_1784910354847.webp)
-
-### Multi-Lane Array Sorting Arena
-![AlgoRace Multi-Lane Sorting Arena](C:/Users/HP/.gemini/antigravity-ide/brain/215e8701-d1d0-4c50-ae84-bf01aa1d873e/active_sorting_arena_1784910441452.png)
+### Live Multi-Lane Sorting Arena
+![AlgoRace Multi-Lane Sorting Arena](image.png)
 
 ### 2D Grid Pathfinding Arena
-![AlgoRace 2D Grid Pathfinding Arena](C:/Users/HP/.gemini/antigravity-ide/brain/215e8701-d1d0-4c50-ae84-bf01aa1d873e/active_pathfinding_arena_1784910503275.png)
+![AlgoRace 2D Grid Pathfinding Arena](image-1.png)
+
+### Live Race Animation Demo
+![AlgoRace Live Race Simulation](algorace_demo.webp)
 
 ---
 
