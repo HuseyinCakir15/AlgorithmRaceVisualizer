@@ -20,7 +20,7 @@ public class BinarySearchModel extends SearchModel {
             markDone();
             return;
         }
-        int mid = (low + high) / 2;
+        int mid = low + (high - low) / 2;
         addComparison();
         highlight = new int[]{low, mid, high};
         visited.add(mid);

@@ -6,6 +6,8 @@ dist/
 *.class
 *.log
 .env
+.env.*
+!.env.example
 .DS_Store
 docx_render_oop/
 docx_render_oop_final/

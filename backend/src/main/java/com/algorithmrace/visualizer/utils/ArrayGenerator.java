@@ -1,7 +1,7 @@
 package com.algorithmrace.visualizer.utils;
 
 import java.util.Arrays;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class ArrayGenerator {
     private ArrayGenerator() {}
@@ -13,7 +13,7 @@ public final class ArrayGenerator {
     public static int[] generate(int size, ArrayType type) {
         int safeSize = Math.max(2, Math.min(size, 160));
         int[] arr = new int[safeSize];
-        Random rng = new Random();
+        ThreadLocalRandom rng = ThreadLocalRandom.current();
         switch (type) {
             case RANDOM -> {
                 for (int i = 0; i < safeSize; i++) arr[i] = rng.nextInt(95) + 5;

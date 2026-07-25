@@ -43,6 +43,6 @@ public final class ComplexityCatalog {
     }
 
     public static Map<String, ComplexityInfo> all() {
-        return INFO;
+        return java.util.Collections.unmodifiableMap(INFO);
     }
 }

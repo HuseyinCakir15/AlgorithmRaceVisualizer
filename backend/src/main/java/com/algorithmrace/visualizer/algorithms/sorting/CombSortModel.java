@@ -14,8 +14,8 @@ public class CombSortModel extends AlgorithmModel {
     @Override
     public void step() {
         if (isDone()) return;
-        if (gap == 0) {
-            gap = array.length;
+        if (gap <= 0) {
+            gap = Math.max(1, array.length);
             swapped = true;
         }
         if (i >= array.length - gap) {
@@ -42,7 +42,7 @@ public class CombSortModel extends AlgorithmModel {
     public void resetState(int[] newArray) {
         setArray(newArray);
         resetStats();
-        gap = 0;
+        gap = newArray.length;
         i = 0;
         swapped = false;
     }

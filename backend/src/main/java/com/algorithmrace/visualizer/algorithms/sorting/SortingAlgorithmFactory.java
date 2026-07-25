@@ -16,7 +16,7 @@ public final class SortingAlgorithmFactory {
             case "Comb Sort" -> new CombSortModel();
             case "Radix Sort" -> new RadixSortModel();
             case "Counting Sort" -> new CountingSortModel();
-            default -> throw new IllegalArgumentException("Unknown sorting algorithm: " + name);
+            default -> throw new IllegalArgumentException("Unrecognized sorting algorithm requested.");
         };
     }
 

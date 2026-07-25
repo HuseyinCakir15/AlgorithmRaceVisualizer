@@ -11,10 +11,10 @@ export function usePlayback(
   const [playing, setPlaying] = useState(false);
   const [frameIndex, setFrameIndex] = useState(0);
 
-  const maxFrames = useMemo(
-    () => Math.max(0, ...(response?.lanes.map((lane) => lane.frames.length) ?? [0])),
-    [response]
-  );
+  const maxFrames = useMemo(() => {
+    if (!response?.lanes || response.lanes.length === 0) return 0;
+    return response.lanes.reduce((max, lane) => Math.max(max, lane.frames.length), 0);
+  }, [response]);
 
   // Compute a content-based signature for the current simulation dataset
   const responseSignature = useMemo(() => {

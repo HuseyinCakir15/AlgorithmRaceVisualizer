@@ -1,10 +1,14 @@
 package com.algorithmrace.visualizer.algorithms.pathfinding;
 
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 public class BellmanFordModel extends PathfindingModel {
     private final Queue<GridCell> queue = new ArrayDeque<>();
+    // O(1) lookup instead of O(n) queue.contains()
+    private final Set<GridCell> inQueue = new HashSet<>();
 
     public BellmanFordModel() {
         super("Bellman-Ford");
@@ -21,6 +25,8 @@ public class BellmanFordModel extends PathfindingModel {
         }
 
         GridCell current = queue.poll();
+        inQueue.remove(current);
+
         if (current == end) {
             reconstructPath(end);
             markDone();
@@ -40,8 +46,9 @@ public class BellmanFordModel extends PathfindingModel {
                 if (nb.state == CellState.EMPTY) {
                     nb.state = CellState.FRONTIER;
                 }
-                if (!queue.contains(nb)) {
+                if (!inQueue.contains(nb)) {
                     queue.add(nb);
+                    inQueue.add(nb);
                 }
             }
         }
@@ -50,10 +57,12 @@ public class BellmanFordModel extends PathfindingModel {
     @Override
     public void reset() {
         queue.clear();
+        inQueue.clear();
         resetStats();
         if (start != null) {
             start.gCost = 0;
             queue.add(start);
+            inQueue.add(start);
         }
     }
 }

@@ -12,7 +12,7 @@ public final class SearchingAlgorithmFactory {
             case "Jump Search" -> new JumpSearchModel();
             case "Exponential Search" -> new ExponentialSearchModel();
             case "Interpolation Search" -> new InterpolationSearchModel();
-            default -> throw new IllegalArgumentException("Unknown searching algorithm: " + name);
+            default -> throw new IllegalArgumentException("Unrecognized searching algorithm requested.");
         };
     }
 

@@ -1,9 +1,18 @@
 server:
   port: ${PORT:8080}
+  tomcat:
+    max-http-form-post-size: 524288      # 512KB max form post size
+    max-swallow-size: 524288             # 512KB max request body swallow
 
 spring:
   application:
     name: algorithm-race-backend
+  servlet:
+    multipart:
+      max-file-size: 512KB
+      max-request-size: 512KB
+  codec:
+    max-in-memory-size: 524288           # 512KB max in-memory codec buffer
 
 app:
   cors:

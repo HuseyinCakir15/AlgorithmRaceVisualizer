@@ -26,9 +26,11 @@ public class DFSModel extends PathfindingModel {
         if (current.state != CellState.START) current.state = CellState.VISITED;
         addStep();
         for (GridCell nb : getNeighbors(current)) {
+            // Only push if EMPTY or END, and also check FRONTIER to prevent
+            // duplicate pushes that cause incorrect parent overwrites.
             if (nb.state == CellState.EMPTY || nb.state == CellState.END) {
                 nb.parent = current;
-                nb.state = (nb == end) ? CellState.END : CellState.FRONTIER;
+                if (nb != end) nb.state = CellState.FRONTIER;
                 stack.push(nb);
             }
         }

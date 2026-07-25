@@ -3,10 +3,10 @@ package com.algorithmrace.visualizer.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class MazeGenerator {
-    private static final Random RNG = new Random();
+    // Thread-safe: each thread gets its own Random instance
 
     private MazeGenerator() {}
 
@@ -52,7 +52,7 @@ public final class MazeGenerator {
             if (neighbors.isEmpty()) {
                 stack.remove(stack.size() - 1);
             } else {
-                Collections.shuffle(neighbors, RNG);
+                Collections.shuffle(neighbors, ThreadLocalRandom.current());
                 int[] chosen = neighbors.get(0);
                 walls[chosen[0]][chosen[1]] = false;
                 walls[chosen[2]][chosen[3]] = false;
@@ -65,7 +65,7 @@ public final class MazeGenerator {
     private static boolean[][] randomWalls(int rows, int cols, double density) {
         boolean[][] walls = new boolean[rows][cols];
         for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) walls[r][c] = RNG.nextDouble() < density;
+            for (int c = 0; c < cols; c++) walls[r][c] = ThreadLocalRandom.current().nextDouble() < density;
         }
         return walls;
     }
@@ -84,8 +84,8 @@ public final class MazeGenerator {
                     walls[r][layer] = true;
                     walls[r][cols - 1 - layer] = true;
                 }
-                int gapRow = layer + 1 + RNG.nextInt(Math.max(1, rows - 2 * layer - 2));
-                int gapCol = layer + 1 + RNG.nextInt(Math.max(1, cols - 2 * layer - 2));
+                int gapRow = layer + 1 + ThreadLocalRandom.current().nextInt(Math.max(1, rows - 2 * layer - 2));
+                int gapCol = layer + 1 + ThreadLocalRandom.current().nextInt(Math.max(1, cols - 2 * layer - 2));
                 if (gapRow < rows) walls[gapRow][layer] = false;
                 if (gapCol < cols) walls[rows - 1 - layer][gapCol] = false;
                 if (gapRow < rows && cols - 1 - layer >= 0) walls[gapRow][cols - 1 - layer] = false;
@@ -102,13 +102,14 @@ public final class MazeGenerator {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) walls[r][c] = true;
         }
-        int numRooms = 5 + RNG.nextInt(4);
+        ThreadLocalRandom rng = ThreadLocalRandom.current();
+        int numRooms = 5 + rng.nextInt(4);
         List<int[]> roomCenters = new ArrayList<>();
         for (int i = 0; i < numRooms; i++) {
-            int rh = 3 + RNG.nextInt(3);
-            int rw = 4 + RNG.nextInt(4);
-            int rr = 1 + RNG.nextInt(Math.max(1, rows - rh - 2));
-            int rc = 1 + RNG.nextInt(Math.max(1, cols - rw - 2));
+            int rh = 3 + rng.nextInt(3);
+            int rw = 4 + rng.nextInt(4);
+            int rr = 1 + rng.nextInt(Math.max(1, rows - rh - 2));
+            int rc = 1 + rng.nextInt(Math.max(1, cols - rw - 2));
             for (int r = rr; r < Math.min(rows - 1, rr + rh); r++) {
                 for (int c = rc; c < Math.min(cols - 1, rc + rw); c++) walls[r][c] = false;
             }

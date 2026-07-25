@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class SimulationService {
@@ -42,7 +42,13 @@ public class SimulationService {
 
     public RaceResponse simulateSearching(SearchingSimulationRequest request) {
         int[] dataset = resolveSearchingDataset(request);
-        int target = request.target() != null ? request.target() : dataset[new Random().nextInt(dataset.length)];
+        // Guard against empty dataset to prevent IllegalArgumentException from nextInt(0)
+        if (dataset.length == 0) {
+            throw new IllegalArgumentException("Dataset must contain at least one element.");
+        }
+        int target = request.target() != null
+            ? request.target()
+            : dataset[ThreadLocalRandom.current().nextInt(dataset.length)];
         List<String> algos = sanitizeAlgorithms(request.algorithms());
         List<RaceLaneResponse> lanes = algos.stream()
             .map(name -> simulateSearchLane(name, dataset, target))
@@ -57,15 +63,38 @@ public class SimulationService {
         int startCol = 2;
         int endRow = rows - 3;
         int endCol = cols - 3;
-        boolean[][] walls = request.walls() != null
-            ? request.walls()
-            : MazeGenerator.generate(rows, cols, startRow, startCol, endRow, endCol, MazeGenerator.fromName(request.mazeType()));
+
+        boolean[][] walls;
+        if (request.walls() != null) {
+            // Validate and clamp client-supplied walls to prevent oversized arrays
+            // bypassing MAX_GRID_ROWS/COLS limits
+            walls = sanitizeWalls(request.walls(), rows, cols);
+        } else {
+            walls = MazeGenerator.generate(rows, cols, startRow, startCol, endRow, endCol,
+                    MazeGenerator.fromName(request.mazeType()));
+        }
 
         List<String> algos = sanitizeAlgorithms(request.algorithms());
         List<RaceLaneResponse> lanes = algos.stream()
             .map(name -> simulatePathLane(name, rows, cols, startRow, startCol, endRow, endCol, walls))
             .toList();
         return new RaceResponse("pathfinding", null, null, walls, lanes, winner(lanes));
+    }
+
+    /**
+     * Sanitizes and clamps a client-supplied walls array to exactly [rows][cols].
+     * Prevents oversized arrays from bypassing grid dimension limits.
+     */
+    private boolean[][] sanitizeWalls(boolean[][] clientWalls, int rows, int cols) {
+        boolean[][] safe = new boolean[rows][cols];
+        int srcRows = Math.min(clientWalls.length, rows);
+        for (int r = 0; r < srcRows; r++) {
+            if (clientWalls[r] != null) {
+                int srcCols = Math.min(clientWalls[r].length, cols);
+                System.arraycopy(clientWalls[r], 0, safe[r], 0, srcCols);
+            }
+        }
+        return safe;
     }
 
     private List<String> sanitizeAlgorithms(List<String> inputAlgos) {

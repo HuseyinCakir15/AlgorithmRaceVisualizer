@@ -8,11 +8,20 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     ...options
   });
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `Request failed: ${response.status}`);
+    let message = `Request failed with status ${response.status}`;
+    try {
+      const data = await response.json();
+      if (data && typeof data === 'object' && typeof data.message === 'string') {
+        message = data.message;
+      }
+    } catch {
+      // Fallback to default message if response isn't JSON
+    }
+    throw new Error(message);
   }
   return response.json() as Promise<T>;
 }
+
 export const api = {
   catalog: () => request<CatalogResponse>('/api/catalog'),
   sorting: (body: unknown) =>

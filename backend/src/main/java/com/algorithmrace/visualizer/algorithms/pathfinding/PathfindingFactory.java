@@ -12,7 +12,7 @@ public final class PathfindingFactory {
             case "Dijkstra" -> new DijkstraModel();
             case "A* Search" -> new AStarModel();
             case "Bellman-Ford" -> new BellmanFordModel();
-            default -> throw new IllegalArgumentException("Unknown pathfinding algorithm: " + name);
+            default -> throw new IllegalArgumentException("Unrecognized pathfinding algorithm requested.");
         };
     }
 

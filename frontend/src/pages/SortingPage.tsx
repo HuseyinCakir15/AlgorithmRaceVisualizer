@@ -180,6 +180,7 @@ export function SortingPage({ catalog }: { catalog: CatalogResponse }) {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchSimulation(true, false);
   }, []);
 
