@@ -75,7 +75,7 @@ export function Controls({
       </div>
 
       {maxFrames > 0 && (
-        <div className="control-group step-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="control-group step-group">
           <button className="btn icon-btn" onClick={handleStepBack} disabled={disabled || frameIndex <= 0} title="Step Backward">
             <SkipBack size={16} />
           </button>
@@ -83,7 +83,7 @@ export function Controls({
             <SkipForward size={16} />
           </button>
           {onSeek && (
-            <div className="timeline-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="timeline-container">
               <input
                 type="range"
                 min="0"
@@ -92,12 +92,9 @@ export function Controls({
                 onChange={(e) => onSeek(Number(e.target.value))}
                 className="timeline-slider"
                 disabled={disabled}
-                style={{
-                  width: '140px',
-                  background: `linear-gradient(to right, #0ea5e9 ${timelinePercent}%, rgba(129, 140, 248, 0.2) ${timelinePercent}%)`
-                }}
+                style={{ background: `linear-gradient(to right, #0ea5e9 ${timelinePercent}%, rgba(129, 140, 248, 0.2) ${timelinePercent}%)` }}
               />
-              <span className="frame-counter" style={{ fontSize: '12px', opacity: 0.85, whiteSpace: 'nowrap', fontFamily: 'var(--font-mono)' }}>
+              <span className="frame-counter">
                 {frameIndex + 1} / {maxFrames}
               </span>
             </div>
@@ -114,10 +111,7 @@ export function Controls({
           value={speed}
           onChange={(event) => onSpeedChange(Number(event.target.value))}
           className="speed-slider"
-          style={{
-            width: '120px',
-            background: `linear-gradient(to right, #0ea5e9 ${speedPercent}%, rgba(129, 140, 248, 0.2) ${speedPercent}%)`
-          }}
+          style={{ background: `linear-gradient(to right, #0ea5e9 ${speedPercent}%, rgba(129, 140, 248, 0.2) ${speedPercent}%)` }}
         />
         <span className="speed-value">{speed}x</span>
       </label>

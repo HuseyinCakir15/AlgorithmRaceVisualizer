@@ -21,7 +21,22 @@ export function PathCanvas({
   onToggleWall?: (row: number, col: number) => void;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
-  const [isMouseDown, setIsMouseDown] = useState(false);
+  const drawingRef = useRef(false);
+  const activePointerIdRef = useRef<number | null>(null);
+  const lastDrawnCellRef = useRef<string | null>(null);
+  const [canvasSizeVersion, setCanvasSizeVersion] = useState(0);
+
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      setCanvasSizeVersion((currentVersion) => currentVersion + 1);
+    });
+
+    resizeObserver.observe(canvas);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -92,14 +107,14 @@ export function PathCanvas({
         ctx.shadowBlur = 0;
       });
     });
-  }, [frame]);
+  }, [frame, canvasSizeVersion]);
 
-  function getGridPos(event: React.MouseEvent<HTMLCanvasElement>) {
+  function getGridPos(clientX: number, clientY: number) {
     const canvas = ref.current;
     if (!canvas || !frame.grid) return null;
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     const rows = frame.grid.length;
     const cols = frame.grid[0]?.length ?? 0;
     const col = Math.floor((x / rect.width) * cols);
@@ -110,21 +125,44 @@ export function PathCanvas({
     return null;
   }
 
-  function handleMouseDown(event: React.MouseEvent<HTMLCanvasElement>) {
+  function drawAt(clientX: number, clientY: number) {
+    const pos = getGridPos(clientX, clientY);
+    if (!pos) return;
+
+    const cellKey = `${pos.row}:${pos.col}`;
+    if (cellKey === lastDrawnCellRef.current) return;
+
+    lastDrawnCellRef.current = cellKey;
+    onToggleWall?.(pos.row, pos.col);
+  }
+
+  function stopDrawing() {
+    drawingRef.current = false;
+    activePointerIdRef.current = null;
+    lastDrawnCellRef.current = null;
+  }
+
+  function handlePointerDown(event: React.PointerEvent<HTMLCanvasElement>) {
     if (!editable || !onToggleWall) return;
-    setIsMouseDown(true);
-    const pos = getGridPos(event);
-    if (pos) onToggleWall(pos.row, pos.col);
+    event.preventDefault();
+    drawingRef.current = true;
+    activePointerIdRef.current = event.pointerId;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    drawAt(event.clientX, event.clientY);
   }
 
-  function handleMouseMove(event: React.MouseEvent<HTMLCanvasElement>) {
-    if (!editable || !onToggleWall || !isMouseDown) return;
-    const pos = getGridPos(event);
-    if (pos) onToggleWall(pos.row, pos.col);
+  function handlePointerMove(event: React.PointerEvent<HTMLCanvasElement>) {
+    if (!editable || !onToggleWall || !drawingRef.current || activePointerIdRef.current !== event.pointerId) return;
+    event.preventDefault();
+    drawAt(event.clientX, event.clientY);
   }
 
-  function handleMouseUp() {
-    setIsMouseDown(false);
+  function handlePointerEnd(event: React.PointerEvent<HTMLCanvasElement>) {
+    if (activePointerIdRef.current !== event.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    stopDrawing();
   }
 
   return (
@@ -132,10 +170,11 @@ export function PathCanvas({
       className="path-canvas"
       ref={ref}
       style={{ cursor: editable ? 'crosshair' : 'default' }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+      onLostPointerCapture={stopDrawing}
     />
   );
 }
