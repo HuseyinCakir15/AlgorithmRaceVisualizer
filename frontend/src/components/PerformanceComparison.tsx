@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { CatalogResponse, RaceResponse, SimulationFrame } from '../models/types';
-import { Trophy, Clock, Zap } from 'lucide-react';
+import { Trophy, Clock, Zap, Download } from 'lucide-react';
 import { triggerConfetti } from '../utils/confetti';
 
 interface PerformanceComparisonProps {
@@ -10,6 +10,20 @@ interface PerformanceComparisonProps {
   isCompleted: boolean;
   catalog: CatalogResponse;
   playing?: boolean;
+  datasetType?: string;
+}
+
+// Security: RFC 4180 CSV field sanitizer preventing CSV Formula Injection (Excel macro execution)
+function sanitizeCsvField(field: string | number | undefined | null): string {
+  if (field === undefined || field === null) return '""';
+  let str = String(field);
+  // Neutralize potential CSV Formula Injections (=, +, -, @, tab, CR)
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = `'${str}`;
+  }
+  // Escape double quotes by doubling them
+  const escaped = str.replace(/"/g, '""');
+  return `"${escaped}"`;
 }
 
 function getWinnerExplanation(winnerName: string, type: 'sorting' | 'searching' | 'pathfinding') {
@@ -59,7 +73,8 @@ export function PerformanceComparison({
   type,
   isCompleted,
   catalog,
-  playing = false
+  playing = false,
+  datasetType
 }: PerformanceComparisonProps) {
   useEffect(() => {
     if (isCompleted && response?.winner) {
@@ -74,6 +89,62 @@ export function PerformanceComparison({
         <p className="no-data-msg">No active simulation. Start a race to compare algorithms.</p>
       </section>
     );
+  }
+
+  function handleDownloadCsv() {
+    if (!isCompleted) return;
+
+    const formattedArena = type.charAt(0).toUpperCase() + type.slice(1);
+    const dateStr = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+    
+    // Luxury Executive Header Block
+    const metaHeader = [
+      '# ==========================================================',
+      '# AlgoRace Benchmark Performance Report',
+      `# Exported: ${dateStr}`,
+      `# Arena: ${formattedArena} | Mode: ${datasetType || 'Standard'} | Size: ${response?.dataset?.length ?? (type === 'pathfinding' ? 504 : 0)}`,
+      '# ==========================================================',
+      ''
+    ].join('\r\n');
+
+    const headers = [
+      'Arena',
+      'Algorithm',
+      'Dataset Mode',
+      'Dataset Size',
+      'Execution Time (ms)',
+      type === 'pathfinding' ? 'Steps' : 'Comparisons',
+      type === 'sorting' ? 'Swaps' : (type === 'searching' ? 'Target Found (1/0)' : 'Path Length'),
+      'Outcome'
+    ];
+
+    const rows = laneData.map((lane) => [
+      formattedArena,
+      lane.name,
+      datasetType || 'Standard',
+      (response?.dataset?.length ?? (type === 'pathfinding' ? 504 : 0)).toString(),
+      lane.timeMs.toString(),
+      lane.opValue.toString(),
+      lane.secValue.toString(),
+      response?.winner ? (response.winner === lane.name ? 'WINNER 🏆' : 'RUNNER UP') : 'FINISHED',
+    ]);
+
+    const formattedTable = [headers, ...rows]
+      .map((row) => row.map(sanitizeCsvField).join(','))
+      .join('\r\n');
+
+    // Add \uFEFF UTF-8 BOM so Excel & Numbers open emojis and special characters perfectly
+    const csvContent = metaHeader + formattedTable;
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `algorace_benchmark_${type}_${Date.now()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   // Get live data for each lane
@@ -186,7 +257,37 @@ export function PerformanceComparison({
 
   return (
     <section className="panel compact performance-comparison-panel">
-      <div className="section-title">Performance Comparison</div>
+      <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>Performance Comparison</span>
+        <button
+          type="button"
+          className="btn btn-secondary csv-export-btn"
+          onClick={handleDownloadCsv}
+          disabled={!isCompleted}
+          title={isCompleted ? "Export scientific benchmark report as CSV" : "Complete the race to export CSV report"}
+          style={{ 
+            display: 'inline-flex', 
+            alignItems: 'center', 
+            gap: '8px',
+            padding: '8px 16px',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            borderRadius: '8px',
+            border: isCompleted ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+            background: isCompleted 
+              ? 'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)' 
+              : 'rgba(255, 255, 255, 0.04)',
+            color: isCompleted ? '#38bdf8' : 'var(--text-muted)',
+            boxShadow: isCompleted ? '0 2px 12px rgba(14, 165, 233, 0.2)' : 'none',
+            opacity: isCompleted ? 1 : 0.45,
+            cursor: isCompleted ? 'pointer' : 'not-allowed',
+            transition: 'all 0.25s ease'
+          }}
+        >
+          <Download size={15} style={{ color: isCompleted ? '#38bdf8' : 'currentColor' }} /> 
+          <span>Export Benchmark CSV</span>
+        </button>
+      </div>
 
       <div className="perf-grid">
         {/* Live Metrics Column */}
