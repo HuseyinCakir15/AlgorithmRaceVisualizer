@@ -87,3 +87,15 @@ AlgorithmRaceVisualizer/
 4. Open a Pull Request on GitHub against the `main` branch with a summary of changes and testing steps.
 
 Happy Coding! 🚀
+
+---
+
+## 📜 Contributor Terms
+
+By submitting a pull request to this project, you agree that:
+
+1. Your contribution is licensed under the same MIT License that covers this repository (see LICENSE).
+2. You grant the project maintainer (**Sanan507**) a perpetual, worldwide, non-exclusive right to use, modify, relicense, and distribute your contribution as part of this project — including in any future commercial or closed-source version — provided that, if required by the MIT License, appropriate credit is preserved.
+3. You confirm the contribution is your own original work, or that you have the right to submit it under these terms.
+
+This keeps things simple: you keep credit for your work, and the project can grow (including commercially) without needing to track down every contributor individually down the line. If you have concerns about this, feel free to open an issue to discuss before submitting a PR.

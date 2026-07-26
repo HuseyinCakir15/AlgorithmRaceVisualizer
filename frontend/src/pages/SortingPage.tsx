@@ -234,12 +234,15 @@ export function SortingPage({ catalog }: { catalog: CatalogResponse }) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', 'sorting');
     url.searchParams.set('algos', algorithms.join(','));
-    if (!isCustomMode) {
-        url.searchParams.set('size', size.toString());
-        url.searchParams.set('mode', datasetType);
+    if (dataset && dataset.length > 0) {
+      url.searchParams.set('mode', 'Custom');
+      url.searchParams.set('cArray', dataset.join(', '));
+    } else if (!isCustomMode) {
+      url.searchParams.set('size', size.toString());
+      url.searchParams.set('mode', datasetType);
     } else {
-        url.searchParams.set('mode', 'Custom');
-        url.searchParams.set('cArray', customArrayStr);
+      url.searchParams.set('mode', 'Custom');
+      url.searchParams.set('cArray', customArrayStr);
     }
 
     navigator.clipboard.writeText(url.href)

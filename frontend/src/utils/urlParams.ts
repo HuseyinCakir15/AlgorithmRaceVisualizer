@@ -9,6 +9,8 @@ export function getUrlParams() {
   const mode = params.get('mode');
   const maze = params.get('maze');
   const cArray = params.get('cArray');
+  const target = params.get('target');
+  const walls = params.get('walls');
 
   return {
     page,
@@ -17,5 +19,7 @@ export function getUrlParams() {
     mode: mode ? mode : undefined,
     maze: maze ? maze : undefined,
     cArray: cArray ? cArray : undefined,
+    target: target ? parseInt(target, 10) : undefined,
+    walls: walls ? walls : undefined,
   };
 }

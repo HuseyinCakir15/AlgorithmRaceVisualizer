@@ -84,9 +84,11 @@ export function PathfindingPage({ catalog }: { catalog: CatalogResponse }) {
       if (params && params.page === 'pathfinding') {
         const urlAlgos = params.algos;
         const urlMaze = params.maze;
+        const urlWallsStr = params.walls;
 
         let newAlgos = [...algorithms];
         let newMaze = mazeType;
+        let parsedWallsGrid: boolean[][] | undefined = undefined;
 
         if (urlAlgos) {
           newAlgos = [
@@ -94,12 +96,25 @@ export function PathfindingPage({ catalog }: { catalog: CatalogResponse }) {
              urlAlgos[1] || algorithms[1],
              urlAlgos[2] || algorithms[2],
              urlAlgos[3] || algorithms[3]
-          ].filter(Boolean); // Pathfinding has 4 lanes, if fewer provided, keep them
+          ].filter(Boolean);
           setAlgorithms(newAlgos);
         }
         if (urlMaze) {
            newMaze = urlMaze;
            setMazeType(urlMaze);
+        }
+        if (urlWallsStr) {
+          const grid = Array.from({ length: 18 }, () => Array(28).fill(false));
+          urlWallsStr.split(',').forEach((coord) => {
+            const [rStr, cStr] = coord.split(':');
+            const r = parseInt(rStr, 10);
+            const c = parseInt(cStr, 10);
+            if (!isNaN(r) && !isNaN(c) && r >= 0 && r < 18 && c >= 0 && c < 28) {
+              grid[r][c] = true;
+            }
+          });
+          parsedWallsGrid = grid;
+          setWalls(grid);
         }
 
         // Remove query parameters from URL without reloading
@@ -107,7 +122,7 @@ export function PathfindingPage({ catalog }: { catalog: CatalogResponse }) {
         url.search = '';
         window.history.replaceState(null, '', url.href);
 
-        fetchSimulation(true, false, { algos: newAlgos, mType: newMaze });
+        fetchSimulation(true, false, { algos: newAlgos, mType: newMaze, walls: parsedWallsGrid });
       } else {
         fetchSimulation(true, false);
       }
@@ -119,6 +134,18 @@ export function PathfindingPage({ catalog }: { catalog: CatalogResponse }) {
     url.searchParams.set('page', 'pathfinding');
     url.searchParams.set('algos', algorithms.join(','));
     url.searchParams.set('maze', mazeType);
+
+    if (walls) {
+      const wallCoords: string[] = [];
+      walls.forEach((rowArr, r) => {
+        rowArr.forEach((isWall, c) => {
+          if (isWall) wallCoords.push(`${r}:${c}`);
+        });
+      });
+      if (wallCoords.length > 0) {
+        url.searchParams.set('walls', wallCoords.join(','));
+      }
+    }
 
     navigator.clipboard.writeText(url.href)
       .then(() => {
