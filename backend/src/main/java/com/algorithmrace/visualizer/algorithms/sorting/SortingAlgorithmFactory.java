@@ -17,23 +17,26 @@ public final class SortingAlgorithmFactory {
             case "Comb Sort" -> new CombSortModel();
             case "Radix Sort" -> new RadixSortModel();
             case "Counting Sort" -> new CountingSortModel();
+            case "Cocktail Sort" -> new CocktailSortModel();
             case "Shell Sort" -> new ShellSortModel();
+
             default -> throw new IllegalArgumentException("Unrecognized sorting algorithm requested.");
         };
     }
 
     public static List<String> allNames() {
         return List.of(
-                "Bubble Sort",
-                "Selection Sort",
-                "Insertion Sort",
-                "Merge Sort",
-                "Quick Sort",
-                "Heap Sort",
-                "Comb Sort",
-                "Radix Sort",
-                "Counting Sort",
-                "Shell Sort"
+            "Bubble Sort",
+            "Selection Sort",
+            "Insertion Sort",
+            "Merge Sort",
+            "Quick Sort",
+            "Heap Sort",
+            "Comb Sort",
+            "Radix Sort",
+            "Counting Sort",
+            "Cocktail Sort",
+            "Shell Sort"
         );
     }
 }
