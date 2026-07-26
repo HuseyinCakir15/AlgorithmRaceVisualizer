@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { CatalogResponse, RaceResponse, SimulationFrame } from '../models/types';
-import { Trophy, Clock, Zap } from 'lucide-react';
+import { Trophy, Clock, Zap, Download } from 'lucide-react';
 import { triggerConfetti } from '../utils/confetti';
 
 interface PerformanceComparisonProps {
@@ -74,6 +74,33 @@ export function PerformanceComparison({
         <p className="no-data-msg">No active simulation. Start a race to compare algorithms.</p>
       </section>
     );
+  }
+
+  function handleDownloadCsv() {
+    const headers = ['Arena', 'Algorithm', 'Dataset Type', 'Size', 'Time (ms)', 'Comparisons', 'Swaps/Steps', 'Winner'];
+
+    const rows = laneData.map((lane) => [
+      type,
+      lane.name,
+      'N/A',
+      (response?.dataset?.length ?? 0).toString(),
+      lane.timeMs.toString(),
+      lane.opValue.toString(),
+      lane.secValue.toString(),
+      response?.winner ?? 'N/A',
+    ]);
+
+    const csvContent = [headers, ...rows].map((row) => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `benchmark_${type}_${Date.now()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   // Get live data for each lane
@@ -186,7 +213,17 @@ export function PerformanceComparison({
 
   return (
     <section className="panel compact performance-comparison-panel">
-      <div className="section-title">Performance Comparison</div>
+         <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>Performance Comparison</span>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={handleDownloadCsv}
+          style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+        >
+          <Download size={14} /> Download Benchmark CSV
+        </button>
+      </div>
 
       <div className="perf-grid">
         {/* Live Metrics Column */}
