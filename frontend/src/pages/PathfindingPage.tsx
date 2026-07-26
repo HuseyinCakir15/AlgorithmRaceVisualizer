@@ -88,7 +88,7 @@ export function PathfindingPage({ catalog }: { catalog: CatalogResponse }) {
 
         let newAlgos = [...algorithms];
         let newMaze = mazeType;
-        let parsedWallsGrid: boolean[][] | null = null;
+        let parsedWallsGrid: boolean[][] | undefined = undefined;
 
         if (urlAlgos) {
           newAlgos = [
