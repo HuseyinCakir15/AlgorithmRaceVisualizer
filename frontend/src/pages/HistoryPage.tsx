@@ -173,7 +173,35 @@ const algoDatabase: Record<string, AlgoMeta> = {
     recommendedUse: 'Improves on Insertion Sort by comparing and shifting elements at a shrinking gap, useful for medium-sized datasets where O(N²) algorithms become too slow but full O(N log N) overhead is unnecessary.',
     realWorldApp: 'Embedded systems and libraries needing a simple, low-memory sort that outperforms Insertion Sort without requiring extra allocation.',
     appDescription: 'Embedded systems and low-memory sorting libraries.'
-},
+  },
+  'Cocktail Sort': {
+    name: 'Cocktail Shaker Sort',
+    category: 'Sorting',
+    best: 'O(N)',
+    average: 'O(N²)',
+    worst: 'O(N²)',
+    space: 'O(1)',
+    stability: 'Stable',
+    speedRank: 'Slow',
+    memoryRank: 'Minimal',
+    recommendedUse: 'Bidirectional variant of Bubble Sort that traverses the list in alternate directions. Fixes the turtle problem where small elements at the end move very slowly.',
+    realWorldApp: 'Educational algorithm design, teaching bidirectional list traversal, and nearly-sorted arrays.',
+    appDescription: 'Bidirectional array sorting and teaching.'
+  },
+  'Cocktail Shaker Sort': {
+    name: 'Cocktail Shaker Sort',
+    category: 'Sorting',
+    best: 'O(N)',
+    average: 'O(N²)',
+    worst: 'O(N²)',
+    space: 'O(1)',
+    stability: 'Stable',
+    speedRank: 'Slow',
+    memoryRank: 'Minimal',
+    recommendedUse: 'Bidirectional variant of Bubble Sort that traverses the list in alternate directions. Fixes the turtle problem where small elements at the end move very slowly.',
+    realWorldApp: 'Educational algorithm design, teaching bidirectional list traversal, and nearly-sorted arrays.',
+    appDescription: 'Bidirectional array sorting and teaching.'
+  },
   // Searching
   'Linear Search': {
     name: 'Linear Search',
@@ -335,11 +363,11 @@ export function HistoryPage({ catalog }: { catalog: CatalogResponse }) {
     { name: 'Quick Sort / Exponential Search', type: 'Sorting / Searching', rating: 'Elite', desc: 'Ultra-low constant factors, O(N log N) / O(log N)' },
     { name: 'Merge Sort / Heap Sort / Dijkstra', type: 'Sorting / Pathfinding', rating: 'Fast', desc: 'Guaranteed O(N log N) / O(V log V)' },
     { name: 'Jump Search / BFS / DFS / Comb Sort / Shell Sort', type: 'All Arenas', rating: 'Moderate', desc: 'O(√N) / Linear graph traversals / gap sorting' },
-    { name: 'Bubble / Selection / Insertion / Linear Search / Bellman-Ford', type: 'All Arenas', rating: 'Slow', desc: 'Quadratic O(N²) sorting, O(N) search, O(V·E) pathfinding' }
+    { name: 'Bubble / Selection / Insertion / Cocktail Sort / Linear Search / Bellman-Ford', type: 'All Arenas', rating: 'Slow', desc: 'Quadratic O(N²) sorting, O(N) search, O(V·E) pathfinding' }
   ];
 
   const memoryRankings = [
-    { name: 'Bubble / Selection / Insertion / Heap / Comb Sort / Shell Sort', type: 'Sorting', rating: 'Minimal', desc: 'O(1) auxiliary space, in-place' },
+    { name: 'Bubble / Selection / Insertion / Heap / Comb Sort / Shell Sort / Cocktail Sort', type: 'Sorting', rating: 'Minimal', desc: 'O(1) auxiliary space, in-place' },
     { name: 'Linear / Binary / Jump / Exponential / Interpolation Search', type: 'Searching', rating: 'Minimal', desc: 'O(1) auxiliary space, index checks' },
     { name: 'Quick Sort / Counting Sort', type: 'Sorting', rating: 'Low', desc: 'O(log N) stack / O(K) frequency count array' },
     { name: 'DFS / Radix Sort / Bellman-Ford', type: 'All Arenas', rating: 'Medium', desc: 'O(Depth) stack / O(N+K) bucket buffers / distance table' },
@@ -347,8 +375,8 @@ export function HistoryPage({ catalog }: { catalog: CatalogResponse }) {
   ];
 
   const stabilityRankings = [
-    { name: 'Merge Sort / Insertion Sort / Bubble Sort / Radix Sort / Counting Sort', type: 'Sorting', rating: 'Stable', desc: 'Preserves duplicate keys ordering' },
-    { name: 'Quick Sort / Heap Sort / Selection Sort / Comb Sort', type: 'Sorting', rating: 'Unstable', desc: 'Does not guarantee duplicate ordering' },
+    { name: 'Merge Sort / Insertion Sort / Bubble Sort / Cocktail Sort / Radix Sort / Counting Sort', type: 'Sorting', rating: 'Stable', desc: 'Preserves duplicate keys ordering' },
+    { name: 'Quick Sort / Heap Sort / Selection Sort / Comb Sort / Shell Sort', type: 'Sorting', rating: 'Unstable', desc: 'Does not guarantee duplicate ordering' },
     { name: 'Searching & Pathfinding Algorithms', type: 'Other', rating: 'N/A', desc: 'Stability metric is not applicable' }
   ];
 

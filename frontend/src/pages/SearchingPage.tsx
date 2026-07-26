@@ -246,11 +246,15 @@ export function SearchingPage({ catalog }: { catalog: CatalogResponse }) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', 'searching');
     url.searchParams.set('algos', algorithms.join(','));
-    if (!isCustomMode) {
-        url.searchParams.set('size', size.toString());
+    url.searchParams.set('target', target.toString());
+    if (dataset && dataset.length > 0) {
+      url.searchParams.set('mode', 'Custom');
+      url.searchParams.set('cArray', dataset.join(', '));
+    } else if (!isCustomMode) {
+      url.searchParams.set('size', size.toString());
     } else {
-        url.searchParams.set('mode', 'Custom');
-        url.searchParams.set('cArray', customArrayStr);
+      url.searchParams.set('mode', 'Custom');
+      url.searchParams.set('cArray', customArrayStr);
     }
 
     navigator.clipboard.writeText(url.href)

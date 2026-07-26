@@ -40,7 +40,11 @@ AlgoRace is a high-performance full-stack web application designed for real-time
 
 ## 🚀 Key Features & Architectural Highlights
 
-- **18+ Algorithms Supported**: Multi-lane comparison across Sorting, Searching, and Pathfinding.
+- **20+ Algorithms Supported**: Multi-lane comparison across Sorting, Searching, and Pathfinding.
+- **Deep Linking & "Share This Run" URL Encoding**: Share exact race configurations and exact dataset array elements / custom pathfinding wall grids via copyable URL search parameters (`window.location.search`).
+- **OpenAPI & Swagger UI Documentation**: Interactive backend API documentation and live endpoint testing dashboard at `/swagger-ui.html`.
+- **Spring Boot Actuator Health Monitoring**: Enterprise production health probe endpoint (`/actuator/health`).
+- **Global Light & Dark Obsidian Theme Switcher**: Instant Sun/Moon theme toggle accessible from the top navbar and sidebar across all screens.
 - **Deterministic Dataset Preservation**: All algorithms race on identical, un-biased dataset seeds for scientifically accurate benchmarking.
 - **Step-by-Step Debugger & Frame Scrubbing**: Scrub backward and forward through algorithm execution timelines with interactive seek bars.
 - **Interactive 2D Grid Wall Editor**: Click and drag directly on the pathfinding canvas to construct custom wall barriers with live path recalculation.
@@ -55,7 +59,7 @@ AlgoRace is a high-performance full-stack web application designed for real-time
 ### 1. Sorting Arena
 Compare comparison and non-comparison sorting algorithms side-by-side on identical array seeds:
 
-- **Supported Algorithms (9)**:
+- **Supported Algorithms (11)**:
   - **Quick Sort** — $O(n \log n)$ best/avg, $O(n^2)$ worst, $O(\log n)$ space.
   - **Merge Sort** — $O(n \log n)$ best/avg/worst, $O(n)$ space.
   - **Heap Sort** — $O(n \log n)$ best/avg/worst, $O(1)$ space.
@@ -63,6 +67,8 @@ Compare comparison and non-comparison sorting algorithms side-by-side on identic
   - **Selection Sort** — $O(n^2)$ best/avg/worst, $O(1)$ space.
   - **Bubble Sort** — $O(n)$ best, $O(n^2)$ avg/worst, $O(1)$ space.
   - **Comb Sort** — $O(n \log n)$ best, $O(n^2 / 2^p)$ avg, $O(n^2)$ worst, $O(1)$ space.
+  - **Shell Sort** — $O(n \log n)$ best, $O(n^{1.3})$ avg, $O(n^2)$ worst, $O(1)$ space (Gap-reduction insertion sort).
+  - **Cocktail Shaker Sort** — $O(n)$ best, $O(n^2)$ avg/worst, $O(1)$ space (Bidirectional Bubble Sort).
   - **Radix Sort** — $O(nk)$ best/avg/worst, $O(n+k)$ space (Digit bucket distribution).
   - **Counting Sort** — $O(n+k)$ best/avg/worst, $O(k)$ space (Frequency count array).
 
