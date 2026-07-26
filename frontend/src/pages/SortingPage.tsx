@@ -501,6 +501,7 @@ export function SortingPage({ catalog }: { catalog: CatalogResponse }) {
           isCompleted={isCompleted}
           catalog={catalog}
           playing={playback.playing}
+          datasetType={isCustomMode ? 'Custom' : datasetType}
         />
         <AlgorithmComparisonCenter algorithms={catalog.sortingAlgorithms} type="sorting" catalog={catalog} />
         <VisualizationLegend type="sorting" />

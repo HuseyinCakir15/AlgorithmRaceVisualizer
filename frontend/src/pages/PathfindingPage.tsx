@@ -301,6 +301,7 @@ export function PathfindingPage({ catalog }: { catalog: CatalogResponse }) {
           isCompleted={isCompleted}
           catalog={catalog}
           playing={playback.playing}
+          datasetType={mazeType}
         />
         <AlgorithmComparisonCenter algorithms={catalog.pathfindingAlgorithms} type="pathfinding" catalog={catalog} />
         <VisualizationLegend type="pathfinding" />

@@ -556,6 +556,7 @@ export function SearchingPage({ catalog }: { catalog: CatalogResponse }) {
           isCompleted={isCompleted}
           catalog={catalog}
           playing={playback.playing}
+          datasetType={isCustomMode ? 'Custom' : 'Random'}
         />
         <AlgorithmComparisonCenter algorithms={catalog.searchingAlgorithms} type="searching" catalog={catalog} />
         <VisualizationLegend type="searching" />
