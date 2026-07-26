@@ -199,7 +199,7 @@ export function SearchingPage({ catalog }: { catalog: CatalogResponse }) {
 
         let newAlgos = [...algorithms];
         let newSize = size;
-        let newTarget = target; // Target could also be serialized if needed, but not specified in prompt example. Will keep as is.
+        let newTarget = target;
 
         if (urlAlgos) {
           newAlgos = [
@@ -248,7 +248,6 @@ export function SearchingPage({ catalog }: { catalog: CatalogResponse }) {
     url.searchParams.set('algos', algorithms.join(','));
     if (!isCustomMode) {
         url.searchParams.set('size', size.toString());
-        // url.searchParams.set('target', target.toString()); // If we wanted to share target
     } else {
         url.searchParams.set('mode', 'Custom');
         url.searchParams.set('cArray', customArrayStr);
